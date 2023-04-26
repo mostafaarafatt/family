@@ -34,7 +34,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('locale/{locale}', [LocaleController::class, 'update'])->name('dashboard.locale');
 
 Route::get('/', function () {
-    $setting = Setting::first();
     return view('dashboard.auth.adminLogin', compact('setting'));
 });
 
@@ -90,17 +89,23 @@ Route::group(['middleware' => ['auth:admin', 'dashboard.locales']], function ($r
         Route::get('admins/adminActivation/{id}', 'adminActivation')->name('admin.active');
     });
 
-    Route::resource('fqapage', FqaController::class);
-    Route::post('fqapage/delete', [FqaController::class, 'deleteFqa'])->name('fqapage.delete');
+    Route::controller(FqaController::class)->group(function () {
+        Route::resource('fqapage', FqaController::class);
+        Route::post('fqapage/delete', 'deleteFqa')->name('fqapage.delete');
+    });
 
-    Route::resource('reports', ReportController::class);
-    Route::get('reports/reportActivation/{id}', [ReportController::class, 'reportActivation'])->name('report.active');
-    Route::get('reports/reportPubliched/{id}', [ReportController::class, 'reportPubliched'])->name('report.publich');
-    Route::post('reports/deleteReport', [ReportController::class, 'deleteReport'])->name('reports.delete');
+    Route::controller(ReportController::class)->group(function () {
+        Route::resource('reports', ReportController::class);
+        Route::get('reports/reportActivation/{id}', 'reportActivation')->name('report.active');
+        Route::get('reports/reportPubliched/{id}', 'reportPubliched')->name('report.publich');
+        Route::post('reports/deleteReport', 'deleteReport')->name('reports.delete');
+    });
 
-    Route::resource('documents', DocumentController::class);
-    Route::get('documents/documentActivation/{id}', [DocumentController::class, 'documentActivation'])->name('document.active');
-    Route::post('reports/deleteDocument', [DocumentController::class, 'deleteDocument'])->name('documents.delete');
+    Route::controller(DocumentController::class)->group(function () {
+        Route::resource('documents', DocumentController::class);
+        Route::get('documents/documentActivation/{id}', 'documentActivation')->name('document.active');
+        Route::post('reports/deleteDocument', 'deleteDocument')->name('documents.delete');
+    });
 
     Route::controller(SettingController::class)->group(function () {
         Route::get('publicSetting', 'publicSetting')->name('publicSetting');
