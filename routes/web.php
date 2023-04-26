@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Dashboard\Admin\AdminController;
+use App\Http\Controllers\Dashboard\AdminsDashboard\AdminDashController;
 use App\Http\Controllers\Dashboard\AirFlights\AirFlightController;
 use App\Http\Controllers\Dashboard\Documents\DocumentController;
 use App\Http\Controllers\Dashboard\LocaleController;
@@ -83,10 +84,10 @@ Route::group(['middleware' => ['auth:admin', 'dashboard.locales']], function ($r
         Route::post('members/deleteRole', 'deleteRole')->name('roles.delete');
     });
 
-    Route::controller(MemberController::class)->group(function () {
-        Route::resource('members', MemberController::class);
-        Route::post('members/deleteMember', 'deleteMember')->name('members.delete');
-        Route::get('members/memberActivation/{id}', 'memberActivation')->name('member.active');
+    Route::controller(AdminDashController::class)->group(function () {
+        Route::resource('admins', AdminDashController::class);
+        Route::post('admins/deleteAdmin', 'deleteAdmin')->name('admins.delete');
+        Route::get('admins/adminActivation/{id}', 'adminActivation')->name('admin.active');
     });
 
     Route::resource('fqapage', FqaController::class);

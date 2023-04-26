@@ -46,13 +46,13 @@
                 <ul class="slide-menu ">
 
                     @if (auth()->user()->hasPermission('admins-read'))
-                        <li><a href="{{ route('members.index') }}" class="slide-item">@lang('All Admins')</a></li>
+                        <li><a href="{{ route('admins.index') }}" class="slide-item">@lang('All Admins')</a></li>
                     @else
                         <li><a href="#" class="slide-item">@lang('All Admins')</a></li>
                     @endif
 
                     @if (auth()->user()->hasPermission('admins-create'))
-                        <li><a href="{{ route('members.create') }}" class="slide-item">@lang('Add new admin')</a></li>
+                        <li><a href="{{ route('admins.create') }}" class="slide-item">@lang('Add new admin')</a></li>
                     @else
                         <li><a href="#" class="slide-item">@lang('Add new admin')</a></li>
                     @endif

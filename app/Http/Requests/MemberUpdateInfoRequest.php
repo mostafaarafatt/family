@@ -24,12 +24,12 @@ class MemberUpdateInfoRequest extends FormRequest
      */
     public function rules()
     {
-        //    dd($this->route('member'));
+        //    dd($this->route('admin'));
         return [
 
             'password' => 'nullable|min:8|max:25|confirmed',
             'current_password' => 'nullable|min:8|max:25',
-            'phone' => ['nullable', 'regex:/^(05)\d{8}$/', Rule::unique('users')->ignore($this->member)],
+            'phone' => ['nullable', 'regex:/^(05)\d{8}$/', Rule::unique('admins')->ignore($this->admin)],
             // 'validate_password' => 'required_with:new_password|same:new_password|min:6|max:25'
         ];
     }

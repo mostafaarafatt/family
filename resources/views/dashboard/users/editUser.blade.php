@@ -104,7 +104,7 @@
 
 
                         <div class="form-group row">
-                            <label for="inputName" class="col-md-2 form-label">@lang('member photo')</label>
+                            <label for="inputName" class="col-md-2 form-label">@lang('admin photo')</label>
                             
                             <div class="col-lg-4 col-sm-12">
                                 <img id="preview-image-before-upload" src="{{ $user->getFirstMediaUrl('user_image') }}"

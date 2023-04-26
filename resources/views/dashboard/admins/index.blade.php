@@ -17,7 +17,7 @@
             <div class="btn-list">
 
                 @if (auth()->user()->hasPermission('admins-create'))
-                    <a href="{{ route('members.create') }}" class="btn btn-outline-primary"><i class="fe fe-plus"></i>
+                    <a href="{{ route('admins.create') }}" class="btn btn-outline-primary"><i class="fe fe-plus"></i>
                         @lang('Add new admin')</a>
                 @else
                     <a href="#" class="btn btn-outline-primary"><i class="fe fe-plus"></i>
@@ -53,43 +53,43 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($members as $item => $member)
+                                @foreach ($admins as $item => $admin)
                                     <tr>
                                         <td>{{ $item += 1 }}</td>
-                                        <td>{{ $member->name }}</td>
-                                        <td>{{ $member->phone }}</td>
-                                        <td>{{ $member->email }}</td>
-                                        <td>{{ $member->created_at->format('d / m / Y') }}</td>
+                                        <td>{{ $admin->name }}</td>
+                                        <td>{{ $admin->phone }}</td>
+                                        <td>{{ $admin->email }}</td>
+                                        <td>{{ $admin->created_at->format('d / m / Y') }}</td>
                                         <td>
                                             {{-- <p
-                                                class="{{ $member->is_active == '1' ? 'bg-success text-white rounded' : 'bg-danger text-white rounded' }}">
-                                                {{ $member->is_active == '1' ? __('active') : __('not active') }}
+                                                class="{{ $admin->is_active == '1' ? 'bg-success text-white rounded' : 'bg-danger text-white rounded' }}">
+                                                {{ $admin->is_active == '1' ? __('active') : __('not active') }}
                                             </p> --}}
                                             <span
-                                                class="{{ $member->is_active == '1' ? 'bg-success-transparent text-success px-2 py-1 br-7 border-success' : 'bg-danger-transparent text-danger px-2 py-1 br-7 border-danger' }}">{{ $member->is_active == '1' ? __('active') : __('not active') }}</span>
+                                                class="{{ $admin->is_active == '1' ? 'bg-success-transparent text-success px-2 py-1 br-7 border-success' : 'bg-danger-transparent text-danger px-2 py-1 br-7 border-danger' }}">{{ $admin->is_active == '1' ? __('active') : __('not active') }}</span>
                                         </td>
                                         <td>
 
                                             @if (auth()->user()->hasPermission('admins-update'))
-                                                <a href="{{ route('members.edit', $id = $member->id) }}"
+                                                <a href="{{ route('admins.edit', $id = $admin->id) }}"
                                                     class="btn btn-outline-primary waves-effect waves-light ">
                                                     <i class="fas fa-edit fa fa-fw"></i>
                                                 </a>
                                             @endif
 
-                                            @if ($member->id != 1)
-                                                <a href="{{ route('member.active', $member->id) }}"
+                                            @if ($admin->id != 1)
+                                                <a href="{{ route('admin.active', $admin->id) }}"
                                                     class="btn btn-outline-success waves-effect waves-light">
                                                     <i class="fas fa-check fa fa-fw"></i>
                                                 </a>
                                             @endif
 
-                                            @if ($member->id != 1)
+                                            @if ($admin->id != 1)
                                                 @if (auth()->user()->hasPermission('admins-delete'))
                                                     <a href=""
                                                         class="btn btn-outline-danger waves-effect waves-light "
                                                         data-bs-toggle="modal" data-bs-target="#normalmodal"
-                                                        data-member_id="{{ $member->id }}">
+                                                        data-admin_id="{{ $admin->id }}">
                                                         <i class="fas fa-trash fa fa-fw"></i>
                                                     </a>
                                                 @endif
@@ -118,13 +118,13 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div> --}}
-                <form action="{{ route('members.delete') }}" method="post">
+                <form action="{{ route('admins.delete') }}" method="post">
                     @csrf
                     <div class="modal-body">
                         <p class="text-center">
                         <h6> هل انت متاكد من عملية الحذف ؟</h6>
                         </p>
-                        <input type="hidden" name="member_id" id="member_id" value="">
+                        <input type="hidden" name="admin_id" id="admin_id" value="">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
@@ -160,10 +160,10 @@
     <script>
         $('#normalmodal').on('shown.bs.modal', function(event) {
             var button = $(event.relatedTarget);
-            var member_id = button.data('member_id');
+            var admin_id = button.data('admin_id');
             var modal = $(this);
 
-            modal.find('.modal-body #member_id').val(member_id);
+            modal.find('.modal-body #admin_id').val(admin_id);
         })
     </script>
 

@@ -44,7 +44,7 @@ class MemberRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:admins',
             'password' => 'required|string|min:8|max:30|confirmed',
             'phone' => 'required|regex:/^(05)\d{8}$/|unique:admins',
-            'member_type' => 'required',
+            'admin_type' => 'required',
         ];
     }
 
@@ -58,7 +58,7 @@ class MemberRequest extends FormRequest
             'email.required' => __('email is required'),
             'email.unique' => __('email is used before, create another'),
             'password.required' => __('password is required'),
-            'member_type.required' => __('permission type is required'),
+            'admin_type.required' => __('permission type is required'),
             'password.min' => __('password length should not be less than 8 charaters'),
             'password.max' => __('password length should not be max than 30 charaters'),
 
