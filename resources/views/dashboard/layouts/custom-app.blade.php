@@ -1,0 +1,1 @@
+@extends('dashboard.layouts.versions.custom-light')

@@ -1,0 +1,1 @@
+<h1>welcome : {{ $mailData->name }}</h1>
