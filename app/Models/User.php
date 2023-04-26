@@ -56,8 +56,5 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Report::class);
     }
 
-    // public function airFlights()
-    // {
-    //     return $this->hasMany(AirFlight::class);
-    // }
+
 }

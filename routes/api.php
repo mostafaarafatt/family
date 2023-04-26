@@ -22,26 +22,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::post('authroization', [AmadeusAuthController::class, 'authroization']);
-
-Route::controller(HotelController::class)->group(function () {
-    Route::get('getAllCities', 'getAllCities');
-    Route::post('hotelSearch', 'hotelSearch');
-    Route::get('hotelFilter', 'hotelFilter');
-    Route::get('getHotelContact', 'getHotelContact');
-    Route::post('roomRates', 'roomRates');
-    Route::get('searchByCountry','searchByCountry');
-    Route::get('searchByCity','searchByCity');
-});
-
-Route::controller(AirFlightController::class)->group(function () {
-    Route::post('airFlightSearch', 'airFlightSearch');
-    Route::post('validateFare', 'validateFare');
-    Route::post('airPortList', 'airPortList');
-    Route::post('airFlightBooking', 'airFlightBooking');
-});
-
-
 Route::post('contactInfo', [ContactController::class, 'store']);
 Route::get('sliderImages', [SliderController::class, 'getSliderImages']);
 Route::get('staticPages', [PageController::class, 'staticPages']);
@@ -55,7 +35,7 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('verifyCode', 'verifyCode');
     Route::post('setNewPassword', 'setNewPassword');
     Route::post('resendCode', 'resendCode');
-    Route::get('getAllNationalities','getAllNationalities');
+    Route::get('getAllNationalities', 'getAllNationalities');
 });
 
 
@@ -70,17 +50,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::post('updateProfile', 'updateProfile');
         Route::post('changePassword', 'changePassword');
-    });
-
-    Route::controller(HotelController::class)->group(function () {
-        Route::post('bookingHotel', 'bookingHotel');
-        Route::post('cancelBooking', 'cancelBooking');
-        Route::get('getAllHotelReservations', 'getAllHotelReservations');
-    });
-
-    Route::controller(AirFlightController::class)->group(function () {
-        Route::post('airFlightBooking', 'airFlightBooking');
-        Route::post('cancelAirFlightBooking', 'cancelAirFlightBooking');
-        Route::get('getAllAirFightReservations', 'getAllAirFightReservations');
     });
 });
