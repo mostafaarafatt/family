@@ -10,6 +10,7 @@ class VerifyPassword extends BaseRequestFormApi
     public function rules(): array
     {
         return [
+            'otpCode' =>'required',
             'phone'=>'required|numeric',
             'password' => 'required|string|min:6|max:30|confirmed',
         ];

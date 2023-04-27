@@ -3,21 +3,15 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use App\Models\OtpCode;
+use App\Http\Requests\Auth\CodeValidation;
+use App\Http\Requests\Auth\LoginUserValidation;
+use App\Http\Requests\Auth\RegisterValidation;
+use App\Http\Requests\Auth\VerifyEmail;
+use App\Http\Requests\Auth\VerifyPassword;
 use App\Models\User;
-use App\Requests\Users\CodeValidation;
-use App\Requests\Users\CompleteUserValidation;
-use App\Requests\Users\CreateUserValidation;
-use App\Requests\Users\LoginUserValidation;
-use App\Requests\Users\VerifyPassword;
-use App\Requests\Users\VerifyPhone;
 use App\Services\UserServices;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class RegisterController extends BaseController
 {
@@ -28,16 +22,16 @@ class RegisterController extends BaseController
         $this->userServices = $userServices;
     }
 
-    public function register(CreateUserValidation $createUserValidation, Request $request)
+    public function register(RegisterValidation $request)
     {
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::where('email', $request->email)->first();
 
         $otpCode = rand(1000, 9999);
-        $data = $request->all();
+        $data = $request->except(['password_confirmation']);
         $data['otpCode'] = $otpCode;
 
         if ($user && $user->is_checked == 1) {
-            return $this->sendResponse(__('Phone already exist'), "failed", 400);
+            return $this->sendResponse(__('email already exist'), "failed", 400);
         }
 
         if ($user && $user->is_checked == 0) {
@@ -49,62 +43,44 @@ class RegisterController extends BaseController
             return $this->sendResponse($message, __('Please enter the code and complete the data'));
         }
 
-        if (!empty($createUserValidation->getErrors())) {
-            return response()->json($createUserValidation->getErrors(), 406);
-        }
-
         $user = $this->userServices->createUser($data);
 
         $message['user'] = $user;
         $message['token'] = $user->createToken('MyApp')->plainTextToken;
 
-
-
-        return $this->sendResponse($message, __('Please enter the code and complete the data'));
+        return $this->sendResponse($message, __('Please enter the code'));
     }
 
-    public function checkCode(CodeValidation $codeValidation)
+    public function checkCode(CodeValidation $request)
     {
-        if (!empty($codeValidation->getErrors())) {
-            return response()->json($codeValidation->getErrors(), 406);
-        }
-
-        $user = User::where('phone', request()->phone)->first();
+        $user = User::where('email', $request->email)->first();
         $user_code = $user->otpCode;
 
-        if ($user_code == request()->otpCode) {
+        if ($user_code == $request->otpCode) {
             $user->update(['is_checked' => '1']);
-            // return "verified code";
             return $this->sendResponse($user, "verified code");
         }
 
-        //return "unverified code";
         return $this->sendResponse($user, "unverified code");
     }
 
+    // public function completeReqister(CompleteUserValidation $completeUserValidation, Request $request)
+    // {
+    //     if (!empty($completeUserValidation->getErrors())) {
+    //         return response()->json($completeUserValidation->getErrors(), 406);
+    //     }
+    //     $user = Auth::user();
+    //     $data = $request->all();
+    //     $data['is_completed'] = "1";
+    //     // dd($data);
+    //     $user->update($data);
 
-    public function completeReqister(CompleteUserValidation $completeUserValidation, Request $request)
+    //     return $this->sendResponse($user, __('Data completed succesfully'));
+    // }
+
+    public function login(LoginUserValidation $request)
     {
-        if (!empty($completeUserValidation->getErrors())) {
-            return response()->json($completeUserValidation->getErrors(), 406);
-        }
-        $user = Auth::user();
-        $data = $request->all();
-        $data['is_completed'] = "1";
-        // dd($data);
-        $user->update($data);
-
-        return $this->sendResponse($user, __('Data completed succesfully'));
-    }
-
-    public function login(LoginUserValidation $loginUserValidation)
-    {
-        if (!empty($loginUserValidation->getErrors())) {
-            return response()->json($loginUserValidation->getErrors(), 406);
-        }
-
-
-        $credentials = $loginUserValidation->request()->only('phone', 'password');
+        $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             if ($user->is_checked == '0') {
@@ -115,46 +91,30 @@ class RegisterController extends BaseController
                 return $this->sendResponse(__('This user is not active, please contact support'), '400', 400);
             }
 
-
-            if ($user->getFirstMedia('userimage')) {
-                $image = $user->getFirstMedia('userimage');
-            } else {
-                $image = null;
-            }
-            $user_image = $user->avatar;
-            $user->user_image = $user_image;
-
             $success['user'] = $user;
             $success['token'] = $user->createToken('MyApp')->plainTextToken;
 
-            //return new UserResource($user);
             return $this->sendResponse($success, "User login successfully");
         }
-
 
         return $this->sendResponse(__('The phone or password is incorrect'), "failed", 401);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         auth()->user()->tokens()->delete();
         return $this->sendResponse("User logout successfully");
     }
 
-    public function forgetPassword(VerifyPhone $verifyPhone, Request $request)
+    public function forgetPassword(VerifyEmail $request)
     {
         //هنا هيبعت الكود
-        if (!empty($verifyPhone->getErrors())) {
-            return response()->json($verifyPhone->getErrors(), 406);
-        }
-
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::where('email', $request->email)->first();
         if (!$user) {
-            // return "user not found";
             return $this->sendResponse("user not found", "failed", 404);
         }
 
-        // send sms
+        // send email code
 
         $new_otpCode = rand(1000, 9999);
         $user->update(['otpCode' => $new_otpCode]);
@@ -163,30 +123,21 @@ class RegisterController extends BaseController
         //return response()->json($new_otpCode);
     }
 
-    public function verifyCode(CodeValidation $codeValidation, Request $request)
+    public function verifyCode(CodeValidation $request)
     {
-        if (!empty($codeValidation->getErrors())) {
-            return response()->json($codeValidation->getErrors(), 406);
-        }
-
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::where('email', $request->email)->first();
         $otpCode = $user->otpCode;
 
         if ($otpCode == $request->otpCode) {
-            //return "true";
             return $this->sendResponse("verified code");
         }
 
         return $this->sendResponse("unverified code", "failed", 404);
     }
 
-    public function setNewPassword(VerifyPassword $verifyPassword, Request $request)
+    public function setNewPassword(VerifyPassword $request)
     {
-        if (!empty($verifyPassword->getErrors())) {
-            return response()->json($verifyPassword->getErrors(), 406);
-        }
-
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::where('email', $request->email)->first();
         if (!$user) {
             return $this->sendResponse("user not found", "failed", 404);
         }
