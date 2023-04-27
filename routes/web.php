@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\Admin\AdminController;
 use App\Http\Controllers\Dashboard\AdminsDashboard\AdminDashController;
 use App\Http\Controllers\Dashboard\AirFlights\AirFlightController;
 use App\Http\Controllers\Dashboard\Documents\DocumentController;
+use App\Http\Controllers\Dashboard\FamilyMembers\FamilyMemberController;
 use App\Http\Controllers\Dashboard\LocaleController;
 use App\Http\Controllers\Dashboard\Members\MemberController;
 use App\Http\Controllers\Dashboard\News\NewController;
@@ -34,7 +35,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('locale/{locale}', [LocaleController::class, 'update'])->name('dashboard.locale');
 
 Route::get('/', function () {
-    return view('dashboard.auth.adminLogin', compact('setting'));
+    return view('dashboard.auth.adminLogin');
 });
 
 Route::controller(AdminController::class)->group(function () {
@@ -106,6 +107,14 @@ Route::group(['middleware' => ['auth:admin', 'dashboard.locales']], function ($r
         Route::get('documents/documentActivation/{id}', 'documentActivation')->name('document.active');
         Route::post('reports/deleteDocument', 'deleteDocument')->name('documents.delete');
     });
+
+    Route::controller(FamilyMemberController::class)->group(function () {
+        Route::resource('members', FamilyMemberController::class);
+        Route::get('members/memberActivation/{id}', 'memberActivation')->name('member.active');
+        Route::post('members/deleteMember', 'deleteMember')->name('members.delete');
+    });
+
+
 
     Route::controller(SettingController::class)->group(function () {
         Route::get('publicSetting', 'publicSetting')->name('publicSetting');
