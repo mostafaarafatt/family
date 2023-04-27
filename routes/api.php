@@ -31,6 +31,7 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('register', 'register')->name('register');
     Route::post('login', 'login');
     Route::post('checkCode', 'checkCode');
+    Route::post('resendCode', 'resendCode');
     Route::post('forgetPassword', 'forgetPassword');
     Route::post('verifyCode', 'verifyCode');
     Route::post('setNewPassword', 'setNewPassword');

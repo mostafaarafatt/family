@@ -1,16 +1,8 @@
-{{-- <h2>
-    Your email : {{ $email }}
-</h2>
-
-<h3>
-    Your password : {{ $password }}
-</h3> --}}
-
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Your Information Required For Dashboard</title>
+    <title>OTP Verification</title>
     <style>
         body {
             background-color: #e6f7ff;
@@ -54,23 +46,19 @@
 </head>
 
 <body style="text-align: center">
-    <h1>Your Information Required For Dashboard</h1>
+    <h1>OTP Verification</h1>
 
     <p>Hello,</p>
 
-    <p>Your Email for login to dashboard is:</p>
+    <p>Your OTP for verification is:</p>
 
-    <p style="font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px;">{{ $email }}</p>
+    <p style="font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px;">{{ $code }}</p>
 
-    <p>Your password for login to dashboard is:</p>
-
-    <p style="font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px;">{{ $password }}</p>
-
+    <p>Enter this OTP in the verification form to complete your registration.</p>
 
     <p>Thank you for choosing our service!</p>
 
-    <img src="{{ asset('appLogo/family.png') }}" alt="">
+    <img src="http://atlobs.com/images/logo.png" alt="">
 </body>
 
 </html>
-

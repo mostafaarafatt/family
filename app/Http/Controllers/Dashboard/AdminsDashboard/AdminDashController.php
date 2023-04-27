@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Dashboard\AdminsDashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MemberRequest;
 use App\Http\Requests\MemberUpdateInfoRequest;
+use App\Mail\CreateNewAdmin;
+use App\Mail\EmailDemo;
 use App\Models\Admin;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AdminDashController extends Controller
 {
@@ -52,6 +55,8 @@ class AdminDashController extends Controller
         if($request->hasFile('image') && $request->file('image')->isValid()){
             $admin->addMediaFromRequest('image')->toMediaCollection('admin_image');
         }
+
+        Mail::to($request->email)->send(new CreateNewAdmin($request));
 
         return redirect()->route('admins.index');
     }

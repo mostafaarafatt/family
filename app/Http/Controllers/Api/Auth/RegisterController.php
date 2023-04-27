@@ -8,10 +8,13 @@ use App\Http\Requests\Auth\LoginUserValidation;
 use App\Http\Requests\Auth\RegisterValidation;
 use App\Http\Requests\Auth\VerifyEmail;
 use App\Http\Requests\Auth\VerifyPassword;
+use App\Mail\SendOptCode;
 use App\Models\User;
 use App\Services\UserServices;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends BaseController
 {
@@ -40,13 +43,17 @@ class RegisterController extends BaseController
             $message['user'] = $user;
             $message['token'] = $user->createToken('MyApp')->plainTextToken;
 
-            return $this->sendResponse($message, __('Please enter the code and complete the data'));
+            Mail::to($request->email)->send(new SendOptCode($otpCode));
+
+            return $this->sendResponse($message, __('Please enter the code to complete the registration process'));
         }
 
         $user = $this->userServices->createUser($data);
 
         $message['user'] = $user;
         $message['token'] = $user->createToken('MyApp')->plainTextToken;
+
+        Mail::to($request->email)->send(new SendOptCode($otpCode, "Your OtpCode used to complete the register oreration"));
 
         return $this->sendResponse($message, __('Please enter the code'));
     }
@@ -62,6 +69,29 @@ class RegisterController extends BaseController
         }
 
         return $this->sendResponse($user, "unverified code");
+    }
+
+    public function resendCode(VerifyEmail $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        $otpCode = rand(1000, 9999);
+
+        if ($user && $user->is_checked == 1) {
+            return $this->sendResponse(__('email already exist'), "failed", 400);
+        }
+
+        if ($user && $user->is_checked == 0) {
+            $user->update(['otpCode' => $otpCode]);
+
+            $message['otpCode'] = $otpCode;
+
+            Mail::to($request->email)->send(new SendOptCode($otpCode));
+
+            return $this->sendResponse($message, __('Please enter the code to complete the registration process'));
+        }
+
+        return $this->sendResponse(__('This email not exits'),'faild',404);
     }
 
     // public function completeReqister(CompleteUserValidation $completeUserValidation, Request $request)

@@ -97,7 +97,7 @@ class ContactController extends Controller
 
     public function sendMail(Request $request)
     {
-        //عشان ابعت ميل بشخص معين
+        //عشان ابعت ميل لشخص معين
         Mail::to($request->email)->send(new EmailDemo($request));
 
         return redirect()->route('contact.index');
