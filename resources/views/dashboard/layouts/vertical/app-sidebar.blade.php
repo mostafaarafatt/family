@@ -159,6 +159,23 @@
                 </ul>
             </li>
 
+            {{-- <li class="side-item side-item-category">قسم ادارة الصور والألبومات</li> --}}
+            <li class="slide">
+                <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="side-menu__icon" width="24" height="24"
+                        viewBox="0 0 24 24">
+                        <path xmlns="http://www.w3.org/2000/svg"
+                            d="M20 4v12H8V4h12m0-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 9.67l1.69 2.26 2.48-3.1L19 15H9zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z" />
+                    </svg>
+                    <span class="side-menu__label">@lang('Manage photos and albums')</span><i
+                        class="angle fe fe-chevron-{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}"></i></a>
+                <ul class="slide-menu ">
+
+                    <li><a href="{{ route('alpums.index') }}" class="slide-item">@lang('All Alpums')</a></li>
+
+                </ul>
+            </li>
+
 
             {{-- <li class="side-item side-item-category">قسم أفراد العائلة </li> --}}
             <li class="slide">

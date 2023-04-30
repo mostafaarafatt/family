@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -51,9 +52,14 @@ class User extends Authenticatable implements HasMedia
     //get FullName Attribute
     //full_name
 
-    public function repots()
+    // public function reports()
+    // {
+    //     return $this->hasMany(Report::class);
+    // }
+
+    public function reports(): MorphMany
     {
-        return $this->hasMany(Report::class);
+        return $this->morphMany(Report::class, 'reportable');
     }
 
 

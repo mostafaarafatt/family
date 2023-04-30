@@ -15,8 +15,8 @@
     <div class="page-header">
         <div class="page-leftheader">
             <div class="btn-list">
-                <a href="{{ route('reports.create') }}" class="btn btn-outline-primary"><i class="fe fe-plus"></i>
-                    @lang('Add new report')</a>
+                <a href="{{ route('alpums.create') }}" class="btn btn-outline-primary"><i class="fe fe-plus"></i>
+                    @lang('Add new alpum')</a>
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@
             <!--div-->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">@lang('All Reports')</div>
+                    <div class="card-title">@lang('All Alpums')</div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -37,59 +37,53 @@
                             <thead>
                                 <tr>
                                     <th class="border-bottom-0">#</th>
-                                    <th class="border-bottom-0">@lang('Reports Tiltle')</th>
-                                    <th class="border-bottom-0">@lang('Posting date')</th>
+                                    <th class="border-bottom-0">@lang('alpums tiltle')</th>
                                     <th class="border-bottom-0">@lang('published date')</th>
-                                    <th class="border-bottom-0">@lang("The publisher's name")</th>
-                                    <th class="border-bottom-0">@lang('Reports status')</th>
-                                    <th class="border-bottom-0">@lang('Posting status')</th>
+                                    <th class="border-bottom-0">@lang('Number of album photos')</th>
+                                    <th class="border-bottom-0">@lang('alpums status')</th>
                                     <th class="border-bottom-0">@lang('controls')</th>
                                 </tr>
                             </thead>
                             <tbody>
 
-                                @foreach ($reports as $index => $report)
+                                @foreach ($alpums as $index => $alpum)
                                     <tr>
                                         <td>{{ $index = +1 }}</td>
-                                        <td>{{ $report->title ?? __('no data found') }}</td>
-                                        <td>{{ $report->created_at->format('d / m / Y') ?? __('no data found') }}</td>
-                                        <td>{{ $report->published_at ?? __('no data found') }}</td>
-                                        <td>{{ $report->reportable->name ?? __('no data found') }}</td>
-                                        <td>
-                                            <span
-                                                class="{{ $report->is_active == '1' ? 'bg-success-transparent text-success px-2 py-1 br-7 border-success' : 'bg-danger-transparent text-danger px-2 py-1 br-7 border-danger' }}">{{ $report->is_active == '1' ? __('active') : __('not active') }}</span>
+                                        <td>{{ $alpum->title ?? __('no data found') }}</td>
+                                        <td>{{ $alpum->created_at->format('d / m / Y') ?? __('no data found') }}</td>
+                                        <td>{{ $alpum->getMedia('alpum_image')->count() + $alpum->getMedia('alpum_cover_image')->count() ?? __('no data found') }}
                                         </td>
                                         <td>
                                             <span
-                                                class="{{ $report->is_published == '1' ? 'bg-success-transparent text-success px-2 py-1 br-7 border-success' : 'bg-danger-transparent text-danger px-2 py-1 br-7 border-danger' }}">{{ $report->is_published == '1' ? __('Has been published') : __('Waiting for publish') }}</span>
+                                                class="{{ $alpum->is_active == '1' ? 'bg-success-transparent text-success px-2 py-1 br-7 border-success' : 'bg-danger-transparent text-danger px-2 py-1 br-7 border-danger' }}">{{ $alpum->is_active == '1' ? __('active') : __('not active') }}</span>
                                         </td>
-
                                         <td>
 
-                                            <a href="{{ route('reports.show', $report->id) }}"
+                                            <a href="{{ route('alpums.show', $alpum->id) }}"
                                                 class="btn btn-outline-warning waves-effect waves-light ">
                                                 <i class="fas fa fa-fw fa-eye"></i>
                                             </a>
 
-                                            <a href="{{ route('report.publich', $id = $report->id) }}"
-                                                class="btn btn-outline-primary waves-effect waves-light ">
-                                                <i class="fas fa-upload fa fa-fw"></i>
+                                            <a href="{{ route('alpums.edit', $alpum->id) }}"
+                                                class="btn btn-outline-primary waves-effect waves-light">
+                                                <i class="fas fa-edit fa fa-fw"></i>
                                             </a>
 
-                                            <a href="{{ route('report.active', $report->id) }}"
+                                            <a href="{{ route('alpum.active', $alpum->id) }}"
                                                 class="btn btn-outline-success waves-effect waves-light">
                                                 <i class="fas fa-check fa fa-fw"></i>
                                             </a>
 
                                             <a href="" class="btn btn-outline-danger waves-effect waves-light "
                                                 data-bs-toggle="modal" data-bs-target="#normalmodal"
-                                                data-report_id="{{ $report->id }}">
+                                                data-alpum_id="{{ $alpum->id }}">
                                                 <i class="fas fa-trash fa fa-fw"></i>
                                             </a>
 
                                         </td>
                                     </tr>
                                 @endforeach
+
 
                             </tbody>
                         </table>
@@ -103,7 +97,7 @@
     <!-- /Row -->
     <!-- Modal -->
     <div class="modal fade" id="normalmodal" tabindex="-1" role="dialog" aria-labelledby="normalmodal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog" role="alpum">
             <div class="modal-content">
                 {{-- <div class="modal-header">
                     <h5 class="modal-title" id="normalmodal1">@lang('Delete')</h5>
@@ -111,14 +105,14 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div> --}}
-                <form action="{{ route('reports.delete') }}" method="post">
+                <form action="{{ route('alpums.delete') }}" method="post">
                     @csrf
 
                     <div class="modal-body">
                         <p class="text-center">
                         <h6> هل انت متاكد من عملية الحذف ؟</h6>
                         </p>
-                        <input type="hidden" name="report_id" id="report_id" value="">
+                        <input type="hidden" name="alpum_id" id="alpum_id" value="">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
@@ -152,14 +146,13 @@
     <script src="{{ asset('assets/js/select2.js') }}"></script>
     <script src="{{ asset('assets/datatablestranslation/datatablestranslation.js') }}"></script>
 
-
     <script>
         $('#normalmodal').on('shown.bs.modal', function(event) {
             var button = $(event.relatedTarget);
-            var report_id = button.data('report_id');
+            var alpum_id = button.data('alpum_id');
             var modal = $(this);
 
-            modal.find('.modal-body #report_id').val(report_id);
+            modal.find('.modal-body #alpum_id').val(alpum_id);
         })
     </script>
 @endsection

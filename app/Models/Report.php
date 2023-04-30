@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
@@ -14,8 +15,13 @@ class Report extends Model implements HasMedia
     protected $guarded = [];
 
 
-    public function user()
+    public function reportable(): MorphTo
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
+
+    // public function getImagesAttribute()
+    // {
+    //     return $this->getMediaResource('report_image');
+    // }
 }

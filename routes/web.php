@@ -4,6 +4,7 @@
 use App\Http\Controllers\Dashboard\Admin\AdminController;
 use App\Http\Controllers\Dashboard\AdminsDashboard\AdminDashController;
 use App\Http\Controllers\Dashboard\AirFlights\AirFlightController;
+use App\Http\Controllers\Dashboard\Alpums\AlpumController;
 use App\Http\Controllers\Dashboard\Documents\DocumentController;
 use App\Http\Controllers\Dashboard\FamilyMembers\FamilyMemberController;
 use App\Http\Controllers\Dashboard\LocaleController;
@@ -112,6 +113,13 @@ Route::group(['middleware' => ['auth:admin', 'dashboard.locales']], function ($r
         Route::resource('members', FamilyMemberController::class);
         Route::get('members/memberActivation/{id}', 'memberActivation')->name('member.active');
         Route::post('members/deleteMember', 'deleteMember')->name('members.delete');
+    });
+
+    Route::controller(AlpumController::class)->group(function () {
+        Route::resource('alpums', AlpumController::class);
+        Route::get('alpums/alpumActivation/{id}', 'alpumActivation')->name('alpum.active');
+        Route::post('alpums/deleteAlpum', 'deleteAlpum')->name('alpums.delete');
+        Route::post('alpums/deleteImage', 'deleteImage')->name('alpums.deleteImage');
     });
 
 

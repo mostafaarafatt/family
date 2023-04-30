@@ -6,7 +6,7 @@
     <!--Page header-->
     <div class="page-header">
         <div class="page-leftheader">
-            <h4 class="page-title mb-0 text-primary">@lang('Report Details')</h4>
+            <h4 class="page-title mb-0 text-primary">@lang('alpum details')</h4>
         </div>
 
     </div>
@@ -118,9 +118,9 @@
 
                         <div class="col-md-4 position-relative">
                             <label for="validationTooltip01" class="form-label">@lang('Reports status')</label>
-                            <input style="background-color: {{ $report->is_active == '1' ? 'green' : 'red' }} ;color:white "
+                            <input style="background-color: {{ $alpum->is_active == '1' ? 'green' : 'red' }} ;color:white "
                                 type="text" class="form-control" readonly placeholder="{{ __('no data found') }}"
-                                value="{{ $report->is_active == '1' ? __('active') : __('not active') }}">
+                                value="{{ $alpum->is_active == '1' ? __('active') : __('not active') }}">
                         </div>
 
 
@@ -148,41 +148,38 @@
                 <form class="row g-3 needs-validation" novalidate>
 
                     <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">@lang('Reports Tiltle')</label>
-                        <input type="text" class="form-control" value="{{ $report->title }}" readonly
+                        <label for="validationTooltip01" class="form-label">@lang('alpums tiltle')</label>
+                        <input type="text" class="form-control" value="{{ $alpum->title }}" readonly
                             placeholder="{{ __('no data found') }}">
 
-                    </div>
-
-                    <div class="col-md-4 position-relative">
-                        <label for="validationTooltip02" class="form-label">@lang('Report Description')</label>
-                        <textarea class="form-control" name="content" rows="2" placeholder="@lang('Report Description')">{{ $report->content }}</textarea>
-                    </div>
-
-                    <div class="col-md-4 position-relative">
-                        <label for="validationTooltip02" class="form-label">@lang('Posting date')</label>
-                        <input type="text" class="form-control" value="{{ $report->created_at->format('d / m / Y') }}"
-                            readonly placeholder="{{ __('no data found') }}">
                     </div>
 
                     <div class="col-md-4 position-relative">
                         <label for="validationTooltip02" class="form-label">@lang('published date')</label>
-                        <input type="text" class="form-control" value="{{ $report->published_at }}" readonly
-                            placeholder="{{ __('no data found') }}">
+                        <input type="text" class="form-control" value="{{ $alpum->created_at->format('d / m / Y') }}"
+                            readonly placeholder="{{ __('no data found') }}">
                     </div>
+
+
 
                     <div class="col-md-4 position-relative">
                         <label for="validationTooltip01" class="form-label">@lang("The publisher's name")</label>
-                        <input type="text" class="form-control" value="{{ $report->reportable->name }}" readonly
+                        <input type="text" class="form-control" value="{{ $alpum->admin->name }}" readonly
                             placeholder="{{ __('no data found') }}">
 
                     </div>
 
                     <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">@lang('Reports status')</label>
-                        <input style="background-color: {{ $report->is_active == '1' ? 'green' : 'red' }} ;color:white "
+                        <label for="validationTooltip01" class="form-label">@lang('alpums status')</label>
+                        <input style="background-color: {{ $alpum->is_active == '1' ? 'green' : 'red' }} ;color:white "
                             type="text" class="form-control" readonly placeholder="{{ __('no data found') }}"
-                            value="{{ $report->is_active == '1' ? __('active') : __('not active') }}">
+                            value="{{ $alpum->is_active == '1' ? __('active') : __('not active') }}">
+                    </div>
+
+                    <div class="col-md-4 position-relative">
+                        <label for="validationTooltip02" class="form-label">@lang('Number of album photos')</label>
+                        <input type="text" class="form-control" readonly
+                            value="{{ $alpum->getMedia('alpum_image')->count() + $alpum->getMedia('alpum_cover_image')->count() ?? __('no data found') }}">
                     </div>
 
                     {{-- <div class="col-md-6 col-lg-6">
@@ -194,7 +191,7 @@
                                 <div id="carousel-captions2" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner">
 
-                                        @foreach ($report->images as $image)
+                                        @foreach ($alpum->images as $image)
                                             <div class="carousel-item active">
                                                 <img class="d-block w-100" alt="" src="{{ $image['url'] }}"
                                                     data-holder-rendered="true">
@@ -218,14 +215,20 @@
                         </div>
                     </div> --}}
 
-                    
+
 
                     <div class="flex flex-col items-center justify-center">
-                        <h3 class="card-title">@lang('Pictures belongs to this report')</h3>
+                        <h3 class="card-title">@lang('Pictures belongs to this alpum')</h3>
                         <div class="flex gap-4">
-                            @foreach ($report->getMedia('report_image') as $image)
+
+                            @if ($alpum->getFirstMediaUrl('alpum_cover_image') != '')
+                                <img src="{{ $alpum->getFirstMediaUrl('alpum_cover_image') }}"
+                                    class="rounded shadow w-28 h-28" style="width: 20%; height:20%; margin:1%">
+                            @endif
+
+                            @foreach ($alpum->getMedia('alpum_image') as $image)
                                 <img src="{{ $image->getUrl() }}" alt="{{ $image->getUrl() }}"
-                                    class="rounded shadow w-28 h-28" style="width: 30%; height:30%; margin:1%">
+                                    class="rounded shadow w-28 h-28" style="width: 20%; height:20%; margin:1%">
                             @endforeach
                         </div>
                     </div>
@@ -239,7 +242,7 @@
         </div>
         <div class="form-group mb-0 mt-2 row justify-content-end">
             <div class="">
-                <a class="btn btn-secondary" href="#" role="button">@lang('Back')</a>
+                <a class="btn btn-secondary" href="{{ route('alpums.index') }}" role="button">@lang('Back')</a>
             </div>
         </div>
     </div>

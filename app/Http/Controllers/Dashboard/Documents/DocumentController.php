@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocumentController extends Controller
 {
@@ -39,10 +40,11 @@ class DocumentController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        $admin = auth()->user();
-        $document = Document::create([
+        $admin_id = Auth::guard('admin')->id();
+        $admin = Admin::find($admin_id);
+
+        $document = $admin->documents()->create([
             'title' => $request->title,
-            'admin_id' => $admin->id,
         ]);
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {

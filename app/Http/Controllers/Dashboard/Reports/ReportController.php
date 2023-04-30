@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Dashboard\Reports;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Report;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use function GuzzleHttp\Promise\all;
 
@@ -37,9 +41,25 @@ class ReportController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        Report::create($request->all());
+        $admin_id = Auth::guard('admin')->id();
+        $admin = Admin::find($admin_id);
+
+        $report = $admin->reports()->create([
+            'title' => $request->title,
+            'content' => $request->content
+        ]);
+
+        $report->update(['is_published' => '1', 'published_at' => Carbon::now()->format('Y/m/d H:i:s')]);
+
+
+        if ($images = $request->file('images')) {
+            foreach ($images as $image) {
+                $report->addMedia($image)->toMediaCollection('report_image');
+            }
+        }
+
         return redirect()->route('reports.index');
     }
 
@@ -51,7 +71,7 @@ class ReportController extends Controller
      */
     public function show(Report $report)
     {
-        //
+        return view('dashboard.reports.report_details', compact('report'));
     }
 
     /**
@@ -113,9 +133,9 @@ class ReportController extends Controller
         $report = Report::where('id', $id)->first();
         $publishReport = $report->is_published;
         if ($publishReport == '1') {
-            $report->update(['is_published' => '0']);
+            $report->update(['is_published' => '0', 'published_at' => null]);
         } else {
-            $report->update(['is_published' => '1']);
+            $report->update(['is_published' => '1', 'published_at' => Carbon::now()->format('Y/m/d H:i:s')]);
         }
 
         return back();
